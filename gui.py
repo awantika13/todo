@@ -1,12 +1,17 @@
 import function
 import PySimpleGUI as sg
 import time
+import os
+
+if not os.path.exists("todos.txt"):
+    with open("todos.txt","w") as file:
+        pass
 
 sg.theme("DarkGreen4")
 clock = sg.Text('',key='clock')
 label = sg.Text("Type in a TO-DO")
 input_box = sg.InputText(tooltip="enter Todo", key ='todo')
-add_button = sg.Button("ADD")
+add_button = sg.Button('ADD')
 list_box = sg.Listbox(values= function.get_todos(), key='item',
                       enable_events= True , size=[ 45,10])
 edit_button = sg.Button('EDIT')
@@ -22,10 +27,10 @@ window =sg.Window('My To-Do App',
 while True:
 
     event, values = window.read(timeout= 10)
-    window['clock'].update(value= time.strftime("%b %d, %Y %H:M:%S"))
+    window['clock'].update(value = time.strftime("%b %d, %Y %H:M:%S"))
     print(1,event)
     print(2,values)
-    print(3, values['item'])
+    print(3,values['item'])
     match event:
         case "ADD":
             todos = function.get_todos()
@@ -36,7 +41,7 @@ while True:
         case "EDIT":
             try:
                 todo_to_edit = values['item'][0]
-                new_todo = values['todo']
+                new_todo = values['todo'] +"\n"
                 todos = function.get_todos()
                 index = todos.index(todo_to_edit)
                 todos[index] = new_todo
@@ -55,7 +60,7 @@ while True:
             except IndexError:
                 sg.popup("please select an item first")
         case 'item':
-            window['todo'].update(value= values['item'][0])
+            window['todo'].update(value=values['item'][0])
         case 'EXIT':
             break
         case sg.WIN_CLOSED:
